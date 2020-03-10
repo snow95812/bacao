@@ -1,0 +1,133 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>八草一茶</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no" ontouchmove="event.preventDefault()" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta content="black-translucent" name="apple-mobile-web-app-status-bar-style" />
+<meta content="telephone=no,email=no" name="format-detection" />
+<link rel="stylesheet" href="css/style.css?<?php echo time();?>">
+<script src="js/lib/zepto.js"></script>
+<script src="js/lib/event.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/lib/animate_new_V3.0.js" type="text/javascript" charset="utf-8"></script>
+</head>
+
+<body id="index" ontouchmove="event.preventDefault()">
+<div style="display:none"><audio src="media/background.mp3" autoplay id="audio" loop controls ></audio></div>
+<div class="bodyFont">
+    <!-- loading -->
+    <div id="loading" class="page show" data-role="page">
+    	<div class="loading">
+        	<div class="bar" id="bar_box">
+                <i></i>
+            	<span><em id="bar" style="width:0%;"></em></span>
+            </div>
+            <div class="yuebing" id="loading_ship"></div>
+            <div class="nums" id="loading_nums">0%</div>
+        </div>
+    </div>
+    <!-- 首页 -->
+    <div id="home" class="page" data-role="page" style="display:none">
+        <a href="javascript:;" class="music_play"></a>
+        <a href="javascript:;" class="music_pause" style="display:none"></a>
+        <div class="pople"></div>
+        <div class="top"></div>
+        <div class="font"></div>
+        <div class="bottom"></div>
+    	<a href="javascript:;" action="toPage.gamePage" class="start"></a>
+    	<!-- <a href="javascript:;" action="showLayer.layerRule" class="rule"></a> -->
+    </div>
+
+
+    <!-- 游戏页 -->
+    <div id="gamePage" class="page" after-data-fn="gameStart" data-role="page">
+    	<div class="time" id="timeCountDown" style="display:none;"></div>
+        <div class="blood">
+            <div class="bars">
+                <div class="box">
+                    <div class="bar"></div>
+                </div>
+                <div class="line"><span class="star"></span></div>
+                <div class="line"><span class="star"></span></div>
+                <div class="line"><span class="star"></span></div>
+            </div>
+        </div>
+        <div class="mask_point">
+            <div class="point">0</div>
+            <div class="flag"></div>
+        </div>
+        <div class="cloud_left"></div>
+        <div class="cloud_right"></div>
+        <canvas id="canvas"></canvas>
+        <canvas id="enemy"></canvas>
+        <canvas id="zidan"></canvas>
+        <div id="count_down" class="count_down count_3" style="display:block"></div>
+
+        <div class="btn_area">
+            <a href="javascript:;" class="btn_reply" onclick="javascript:gameStart()"><img src="images/btn_1.png"></a>
+            <a href="javascript:;" class="btn_share" action="showLayer.message"><img src="images/btn_2.png"></a>
+            <a href="javascript:;" class="btn_next" action="toPage.resulePage"><img src="images/btn_3.png"></a>
+        </div>
+    </div>
+
+    <!-- 结果页 -->
+    <div id="resulePage" class="page" data-role="page" after-data-fn="fontScroll" style="display:none;">
+        <div class="page_cont">
+            <div class="top"><div class="font">
+                <div id="demo">
+                 <ul id="demo1">
+                     <li>这里是文字留言这里是文字留言</li>
+                     <li>这里是文字留言这里是文字留言</li>
+                     <li>这里是文字留言这里是文字留言</li>
+                     <li>这里是文字留言这里是文字留言</li>
+                     <li>这里是文字留言这里是文字留言</li>
+                     <li>这里是文字留言这里是文字留言</li>
+                     <li>这里是文字留言这里是文字留言</li>
+                     <li>这里是文字留言这里是文字留言</li>
+                     <li>这里是文字留言这里是文字留言</li>
+                     <li>这里是文字留言这里是文字留言</li>
+                     <li>这里是文字留言这里是文字留言</li>
+                     <li>这里是文字留言这里是文字留言</li>
+                     <li>这里是文字留言这里是文字留言</li>
+                     <li>这里是文字留言这里是文字留言</li>
+                     <li>这里是文字留言这里是文字留言</li>
+                     <li>这里是文字留言这里是文字留言</li>
+                     <li>这里是文字留言这里是文字留言</li>
+                     <li>这里是文字留言这里是文字留言</li>
+                     <li>这里是文字留言这里是文字留言</li>
+                     <li>这里是文字留言这里是文字留言</li>
+                     <li>这里是文字留言这里是文字留言</li>
+                     <li>这里是文字留言这里是文字留言</li>
+                     <li>这里是文字留言这里是文字留言</li>
+                     <li>这里是文字留言这里是文字留言</li>
+                 </ul>
+                 <div id="demo2"></div>
+                </div>
+            </div></div>
+            <div><img src="images/last_2.jpg" width="100%"></div>
+            <div><img src="images/last_3.jpg" width="100%"></div>
+            <div><img src="images/last_4.jpg" width="100%"></div>
+        </div>
+    </div>
+
+    <!-- 关卡结束 -->
+    <div class="layer_style layer_level" id="layerLevel" style="display:none">
+        <div class="input"><textarea></textarea></div>
+        <div class="clearfix"></div>
+        <a href="javascript:;" class="btn"></a>
+    </div>
+
+    <div id="layer_mask" style="display:none"></div>
+    <div id="message" class="layer_style message" style="display:none"><a href="javascript:;" action="closeLayer"></a></div>
+</div>
+
+    <script>
+    var userInfoInputed = 1;
+    var sure_nums = 0;
+    </script>
+	<script src="js/main.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/init.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/game1.js" type="text/javascript" charset="utf-8"></script>
+</body>
+</html>
