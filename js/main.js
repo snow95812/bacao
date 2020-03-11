@@ -174,6 +174,7 @@ var modjs = function(t) {
 
 
 	function fontScroll(){
+		audios.pause();
 		var speed = 40
 		// 向上滚动
 		var demo = document.getElementById("demo");

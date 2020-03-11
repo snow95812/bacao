@@ -15,7 +15,7 @@ var d = document,
 
 	//碰撞效果
 	effect = d.getElementById('effect'),
-	effectStage = effect.getContext('2d'),
+	stageEffect = effect.getContext('2d'),
 
 	enemy = d.getElementById('enemy'),
 	stageEnemy = enemy.getContext('2d'),
@@ -46,7 +46,7 @@ var emenyConfig = [
 	},
 	{
 		p:'images/game_2_goods.png',
-		w:emTpx(11.41),
+		w:emTpx(10.9),
 		h:emTpx(9.2)
 	},
 	{
@@ -57,38 +57,41 @@ var emenyConfig = [
 ]
 var effectConfig = [
 	{
-		p:'images/pow.png',
-		w:emTpx(10.25),
-		h:emTpx(7),
-		deviationX:0,
-		deviationY:0
+		p: 'images/pow.png',
+		w: emTpx(10.25),
+		h: emTpx(7),
+		deviationX: emTpx(2.5),
+		deviationY: emTpx(-1.5)
 	},
 	{
-		p:'images/like.png',
-		w:emTpx(7.7),
-		h:emTpx(7.125),
-		deviationX:0,
-		deviationY:0
+		p: 'images/like.png',
+		w: emTpx(7.7),
+		h: emTpx(7.125),
+		deviationX: emTpx(.5),
+		deviationY: emTpx(-3.625)
 	},
 	{
-		p:'images/yeah.png',
-		w:emTpx(9.58),
-		h:emTpx(9.83),
-		deviationX:0,
-		deviationY:0
+		p: 'images/yeah.png',
+		w: emTpx(9.58),
+		h: emTpx(9.83),
+		deviationX: emTpx(3.75),
+		deviationY: emTpx(-4.3)
 	},
 	{
-		p:'images/crash.png',
-		w:emTpx(10.91),
-		h:emTpx(11.16),
-		deviationX:0,
-		deviationY:0
+		p: 'images/crash.png',
+		w: emTpx(10.91),
+		h: emTpx(11.16),
+		deviationX: emTpx(0),
+		deviationY: emTpx(-6.54)
 	}
 ]
 
 //飞机
 var flyLocation = [0, emTpx(11.125), emTpx(22.25)];
 var flyWH = {w:emTpx(13.58), h:emTpx(10.375)};
+
+
+//飞机
 var fly = function(level){
 	this.level = level
 	this.init();
@@ -96,7 +99,7 @@ var fly = function(level){
 fly.prototype = {
 	init : function(){
 		var _this = this;
-		this.type = 'flys';
+		this.type = 0;
 		this.item = new Image();
 		this.item.src = 'images/fly.png';
 		this.width = flyWH.w;
@@ -191,28 +194,33 @@ fly.prototype = {
 	}
 }
 
-
+//击中效果
 var getEffects = function(obj){
-	this.obj = obj
+	this.goods = obj
 	this.init();
 }
 getEffects.prototype = {
 	init : function(){
 		var _this = this;
-		var thisObj = effectConfig[this.obj.type];
+		var thisObj = effectConfig[this.goods.type];
 		this.item = new Image();
 		this.item.src = thisObj.p;
 		this.scale = 0.01;
 		this.id = Date.parse(new Date()) + '_' + parseInt(Math.random() * 999999);
-		this.w = thisObj.w;
-		this.h = thisObj.h;
+		this.ow= thisObj.w;
+		this.oh= thisObj.h;
+		this.w = this.ow*this.scale;
+		this.h = this.oh*this.scale;
 		this.timer = null;
-		this.y = this.obj.y + thisObj.deviationY;
-		this.x = this.obj.x + thisObj.deviationX;
+		this.dy = thisObj.deviationY;
+		this.oy= (this.goods.y + this.oh) + thisObj.deviationY;
+		this.y = (this.goods.y + this.oh) + thisObj.deviationY;
+		this.x = this.goods.x + thisObj.deviationX;
 		this.isRun = true;
 		this.timer = null;
 		this.item.onload = function(){
 			_this.animate();
+			games.screenEffect.push(_this);
 			return this;
 		}
 	},
@@ -222,35 +230,42 @@ getEffects.prototype = {
 			if(itemss.id == id){
 				itemss.isRun = false;
 				cancelAnimationFrame(itemss.timer);
-				games.screenEffect.splice(i, 1)
+				games.screenEffect.splice(i, 1);
 				break;
 			}
 		}
 	},
 	animate: function(){
-		_this = this;
-		_this.scale + 0.01;
-		_this.w = _this.w * _this.scale;
-		_this.h = _this.h * _this.scale;
+		var _this = this;
+		_this.scale += 0.05;
+		_this.w = _this.ow * _this.scale;
+		_this.h = _this.oh * _this.scale;
+		_this.y = _this.oy - _this.h;
 		if(_this.scale < 1){
 			_this.timer = requestAnimationFrame(function(){
 				_this.animate();
 			})
 		}else{
-			settimeOut(function(){
-				_this.delItem(_this.id)
+			setTimeout(function(){
+				if(_this.goods.type == 0){
+					games.life--;
+					games.flys.die();
+					_this.delItem(_this.id);
+				}else{
+					_this.goods.delSelf();
+					_this.delItem(_this.id);
+				}
 			},300)
 		}
 	}
 }
 
 var itemLcation = [emTpx(1.5), emTpx(13.125), emTpx(23.75)];
+//敌人
 var getItems = function(level){
 	this.level = Math.floor(Math.random()*(3 - 1) + 1);;
 	this.init();
 }
-
-//敌人
 getItems.prototype = {
 	init : function(){
 		this.items = new Image();
@@ -337,9 +352,9 @@ getItems.prototype = {
 				games.blood -= 20;
 				games.pointHandler();
 				if(games.blood <= 0){
-					games.life--;
 					games.flys.isRun = false;
-					games.flys.die();
+					new getEffects(games.flys)
+
 				}
 
 				_this.delItem(this.id)
@@ -347,11 +362,13 @@ getItems.prototype = {
 		}
 	}
 }
+
+
+
 //子弹
 var getZidan = function(level){
 	this.level = Math.floor(Math.random()*(4 - 1) + 1);;
 	this.init();
-	//return this;
 }
 getZidan.prototype = {
 	init : function(){
@@ -428,19 +445,18 @@ getZidan.prototype = {
 							games.addFlag();
 						}
 						goods.isRun = false;
-						games.screenEffect.push(new getEffects(goods))
+						new getEffects(goods)
 						games.pointHandler();
-						setTimeout(function(){
-							goods.delSelf();
-						},500)
-
 					}
 				}
 			}
 		}
-
 	}
 }
+
+
+
+//游戏主体
 window.game = function(){
 	this.level = 1;
 }
@@ -552,7 +568,7 @@ game.prototype = {
 		stageEnemy.clearRect(0,0,winWidth,winHeight)
 		stageZidan.clearRect(0,0,winWidth,winHeight)
 		stageEffect.clearRect(0,0,winWidth,winHeight)
-		
+
 		stage.drawImage(_this.flys.item, _this.flys.x, _this.flys.y, _this.flys.width, _this.flys.height);
 		for(var i=0;i<this.screenItems.length;i++){
 			var goods = this.screenItems[i]
@@ -564,10 +580,9 @@ game.prototype = {
 			stageZidan.drawImage(zidan.items, zidan.x, zidan.y, zidan.width, zidan.height);
 		}
 
-
 		for(var i=0; i<this.screenEffect.length; i++){
-			var zidan = this.screenEffect[i];
-			stageEffect.drawImage(zidan.items, zidan.x, zidan.y, zidan.w, zidan.h);
+			var effect = this.screenEffect[i];
+			stageEffect.drawImage(effect.item, effect.x, effect.y, effect.w, effect.h);
 		}
 		if(_this.isRun){
 			_this.stageTimer = requestAnimationFrame(function(){
@@ -601,6 +616,8 @@ game.prototype = {
 }
 
 function gameStart(){
+	var audios = document.getElementById('audio');
+	audios.play();
 	window.games = null;
 	countDown.style.display = 'block';
 	hideLayer('layerLevel');

@@ -23,7 +23,9 @@ var imgArr = [
 	'star_2.png',
 	'star_3.png',
 
-	'pow.png'
+	'pow.png',
+
+	'background.mp3'
 ];
 var loaded = 0, failImg = [], timer = '';
 var t = Date.parse(new Date());
@@ -34,27 +36,51 @@ var shipWidth = loading_ship.clientWidth
 function loadImg(newImg){
 	failImg = [];
 	newImg.forEach(function(el){
-		var img = new Image();
-		img.src='images/'+el;
-		img.onload = function(){
-			loaded++;
+		var img, audio;
+		if(el.indexOf('.mp3') > -1){
+			audio = new Audio();
+			audio.src='media/'+el;
+			audio.preload="metadata";
+			audio.onloadedmetadata=function(){
+				loaded++;
+				var bar_num = parseInt(loaded / imgArr.length * 100);
+				document.getElementById('bar').style.width = bar_num + '%';
+				loading_nums.innerHTML = bar_num + '%';
+				loading_ship.style.left = bar_num / 100 * (barWidth - shipWidth + 10) + 'px';
+				loading_nums.style.left = bar_num / 100 * (barWidth - shipWidth + 10) + 'px';
 
-			var bar_num = parseInt(loaded / imgArr.length * 100);
-			document.getElementById('bar').style.width = bar_num + '%';
-			loading_nums.innerHTML = bar_num + '%';
-			loading_ship.style.left = bar_num / 100 * (barWidth - shipWidth + 10) + 'px';
-			loading_nums.style.left = bar_num / 100 * (barWidth - shipWidth + 10) + 'px';
 
-
-			if(loaded == imgArr.length){
-				setTimeout(function(){
-					window.clearInterval(timer);
-					toPage($(loading_ship), 'home')
-				},1000)
+				if(loaded == imgArr.length){
+					setTimeout(function(){
+						window.clearInterval(timer);
+						toPage($(loading_ship), 'home')
+					},1000)
+				}
 			}
-		}
-		img.onerror = function(){
-			failImg.push(el);
+		}else{
+			img = new Image();
+			img.src='images/'+el;
+
+			img.onload = function(){
+				loaded++;
+
+				var bar_num = parseInt(loaded / imgArr.length * 100);
+				document.getElementById('bar').style.width = bar_num + '%';
+				loading_nums.innerHTML = bar_num + '%';
+				loading_ship.style.left = bar_num / 100 * (barWidth - shipWidth + 10) + 'px';
+				loading_nums.style.left = bar_num / 100 * (barWidth - shipWidth + 10) + 'px';
+
+
+				if(loaded == imgArr.length){
+					setTimeout(function(){
+						window.clearInterval(timer);
+						toPage($(loading_ship), 'home')
+					},1000)
+				}
+			}
+			img.onerror = function(){
+				failImg.push(el);
+			}
 		}
 	})
 	if(failImg.length > 0) loadImg(failImg);
