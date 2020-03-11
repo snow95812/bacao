@@ -8,10 +8,14 @@ var d = document,
 	speed  = [2,3,4],
 	winHeight = window.innerHeight,
 	winWidth = window.innerWidth,
-	defaultLevelSingleTime = 5,//单关时间
+	defaultLevelSingleTime = 45,//单关时间
 
 	canvas = d.getElementById('canvas'),
 	stage = canvas.getContext('2d'),
+
+	//碰撞效果
+	effect = d.getElementById('effect'),
+	effectStage = effect.getContext('2d'),
 
 	enemy = d.getElementById('enemy'),
 	stageEnemy = enemy.getContext('2d'),
@@ -22,12 +26,14 @@ var d = document,
 	canvas.width = window.innerWidth;
 	canvas.height = window.innerHeight;
 
+	effect.width = window.innerWidth;
+	effect.height = window.innerHeight;
+
 	enemy.width = window.innerWidth;
 	enemy.height = window.innerHeight;
 
 	zidan.width = window.innerWidth;
 	zidan.height = window.innerHeight;
-console.log(ratio)
 var emTpx = function(em){
 	return em * (winWidth / 750 * 24);
 }
@@ -49,6 +55,36 @@ var emenyConfig = [
 		h:emTpx(9.83)
 	}
 ]
+var effectConfig = [
+	{
+		p:'images/pow.png',
+		w:emTpx(10.25),
+		h:emTpx(7),
+		deviationX:0,
+		deviationY:0
+	},
+	{
+		p:'images/like.png',
+		w:emTpx(7.7),
+		h:emTpx(7.125),
+		deviationX:0,
+		deviationY:0
+	},
+	{
+		p:'images/yeah.png',
+		w:emTpx(9.58),
+		h:emTpx(9.83),
+		deviationX:0,
+		deviationY:0
+	},
+	{
+		p:'images/crash.png',
+		w:emTpx(10.91),
+		h:emTpx(11.16),
+		deviationX:0,
+		deviationY:0
+	}
+]
 
 //飞机
 var flyLocation = [0, emTpx(11.125), emTpx(22.25)];
@@ -60,6 +96,7 @@ var fly = function(level){
 fly.prototype = {
 	init : function(){
 		var _this = this;
+		this.type = 'flys';
 		this.item = new Image();
 		this.item.src = 'images/fly.png';
 		this.width = flyWH.w;
@@ -155,6 +192,58 @@ fly.prototype = {
 }
 
 
+var getEffects = function(obj){
+	this.obj = obj
+	this.init();
+}
+getEffects.prototype = {
+	init : function(){
+		var _this = this;
+		var thisObj = effectConfig[this.obj.type];
+		this.item = new Image();
+		this.item.src = thisObj.p;
+		this.scale = 0.01;
+		this.id = Date.parse(new Date()) + '_' + parseInt(Math.random() * 999999);
+		this.w = thisObj.w;
+		this.h = thisObj.h;
+		this.timer = null;
+		this.y = this.obj.y + thisObj.deviationY;
+		this.x = this.obj.x + thisObj.deviationX;
+		this.isRun = true;
+		this.timer = null;
+		this.item.onload = function(){
+			_this.animate();
+			return this;
+		}
+	},
+	delItem : function(id){
+		for(var i=0; i<games.screenEffect.length;i++){
+			var itemss = games.screenEffect[i];
+			if(itemss.id == id){
+				itemss.isRun = false;
+				cancelAnimationFrame(itemss.timer);
+				games.screenEffect.splice(i, 1)
+				break;
+			}
+		}
+	},
+	animate: function(){
+		_this = this;
+		_this.scale + 0.01;
+		_this.w = _this.w * _this.scale;
+		_this.h = _this.h * _this.scale;
+		if(_this.scale < 1){
+			_this.timer = requestAnimationFrame(function(){
+				_this.animate();
+			})
+		}else{
+			settimeOut(function(){
+				_this.delItem(_this.id)
+			},300)
+		}
+	}
+}
+
 var itemLcation = [emTpx(1.5), emTpx(13.125), emTpx(23.75)];
 var getItems = function(level){
 	this.level = Math.floor(Math.random()*(3 - 1) + 1);;
@@ -246,9 +335,8 @@ getItems.prototype = {
 			if(this.type == 3){
 				this.isRun = false;
 				games.blood -= 20;
-				console.log(games.blood)
 				games.pointHandler();
-				if(games.blood == 0){
+				if(games.blood <= 0){
 					games.life--;
 					games.flys.isRun = false;
 					games.flys.die();
@@ -321,7 +409,7 @@ getZidan.prototype = {
 			if(
 				this.y < goods.y + (goods.h / 2) &&
 				this.x > goods.x &&
-				this.x < (goods.x + goods.w)
+				this.x < (goods.x + goods.w) && goods.isRun
 			){
 				if(!games.pause){
 					this.isRun = false;
@@ -329,6 +417,7 @@ getZidan.prototype = {
 					goods.shot++;
 					if(goods.shot > 5){
 						if(goods.type == 3){
+
 							games.point += 10;
 						}else if(goods.type == 1){
 							games.blood += 5;
@@ -338,8 +427,13 @@ getZidan.prototype = {
 						}else if(goods.type == 2){
 							games.addFlag();
 						}
+						goods.isRun = false;
+						games.screenEffect.push(new getEffects(goods))
 						games.pointHandler();
-						goods.delSelf();
+						setTimeout(function(){
+							goods.delSelf();
+						},500)
+
 					}
 				}
 			}
@@ -355,12 +449,7 @@ game.prototype = {
 		this.pointBar = $('.blood .bar');
 		this.pointFont = $('.mask_point .point');
 		this.pointFlag = $('.mask_point .flag');
-		this.currentLevel = 1;
 		this.timer = null;
-		this.goods_num = 0;
-		this.bad_num = 0;
-		this.goods_arr = [];
-		this.last_goods_num = 0;
 		this.stageTimer = null;
 		this.insertTimer = null;
 		this.insertZidanTimer = null;
@@ -371,6 +460,7 @@ game.prototype = {
 		this.time = defaultLevelSingleTime;
 		this.screenItems = [];
 		this.screenZidan = [];
+		this.screenEffect = [];
 		this.blood = 100;
 		this.point = 0;
 		this.life = 3;
@@ -430,13 +520,10 @@ game.prototype = {
 	},
 	gameOver : function(){
 		var _this = this;
-		this.goods_arr.push(this.goods_num);
 		_this.isRun = false;
 		_this.clearItems();
 		$('.btn_area').show();
 
-		this.last_goods_num = this.goods_arr;
-		sure_nums = this.last_goods_num.sort(function(a,b){return a-b})[0];
 
 		clearTimeout(_this.insertTimer)
 		clearTimeout(_this.insertZidanTimer)
@@ -464,6 +551,8 @@ game.prototype = {
 		stage.clearRect(0,0,winWidth,winHeight)
 		stageEnemy.clearRect(0,0,winWidth,winHeight)
 		stageZidan.clearRect(0,0,winWidth,winHeight)
+		stageEffect.clearRect(0,0,winWidth,winHeight)
+		
 		stage.drawImage(_this.flys.item, _this.flys.x, _this.flys.y, _this.flys.width, _this.flys.height);
 		for(var i=0;i<this.screenItems.length;i++){
 			var goods = this.screenItems[i]
@@ -474,6 +563,12 @@ game.prototype = {
 			var zidan = this.screenZidan[i];
 			stageZidan.drawImage(zidan.items, zidan.x, zidan.y, zidan.width, zidan.height);
 		}
+
+
+		for(var i=0; i<this.screenEffect.length; i++){
+			var zidan = this.screenEffect[i];
+			stageEffect.drawImage(zidan.items, zidan.x, zidan.y, zidan.w, zidan.h);
+		}
 		if(_this.isRun){
 			_this.stageTimer = requestAnimationFrame(function(){
 				_this.drapStage()
@@ -483,8 +578,6 @@ game.prototype = {
 	replay : function(){
 		hideLayer('layerLevel');
 		this.timer = null;
-		this.goods_num = 0;
-		this.bad_num = 0;
 		this.stageTimer = null;
 		this.insertTimer = null;
 		this.isRun = true;
