@@ -11,10 +11,11 @@
 <script src="js/lib/zepto.js"></script>
 <script src="js/lib/event.js" type="text/javascript" charset="utf-8"></script>
 <script src="js/lib/animate_new_V3.0.js" type="text/javascript" charset="utf-8"></script>
+<script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
 </head>
 
 <body id="index" ontouchmove="event.preventDefault()">
-<div style="display:none"><audio src="media/background.mp3" id="audio" loop controls ></audio></div>
+<div style="visibility:hidden;"><audio src="media/background.mp3" id="audio" autoplay preload loop controls ></audio></div>
 <div class="bodyFont">
     <!-- loading -->
     <div id="loading" class="page show" data-role="page">
@@ -66,61 +67,19 @@
         <div id="count_down" class="count_down count_3" style="display:block"></div>
 
         <div class="btn_area">
-            <a href="javascript:;" class="btn_reply" onclick="javascript:gameStart()"><img src="images/btn_1.png"></a>
-            <a href="javascript:;" class="btn_share" action="showLayer.message"><img src="images/btn_2.png"></a>
-            <a href="javascript:;" class="btn_next" action="toPage.resulePage"><img src="images/btn_3.png"></a>
+            <a href="resule.html" class="btn_next"><img src="images/btn_1.png"></a>
+            <a href="javascript:;" class="btn_reply" onClick="gameStart()"><img src="images/btn_2.png"></a>
+            <a href="javascript:;" class="btn_share" action="showLayer.message"><img src="images/btn_3.png"></a>
         </div>
+        <div class="layer_style layer_level" id="layerLevel" style="display:none"></div>
+
+        <div id="layer_mask" style="display:none"></div>
+        <div id="message" class="layer_style message" style="display:none"><a href="javascript:;" action="closeLayer"></a></div>
     </div>
 
-    <!-- 结果页 -->
-    <div id="resulePage" class="page" data-role="page" after-data-fn="fontScroll" style="display:none;">
-        <div class="page_cont">
-            <div class="top"><div class="font">
-                <div id="demo">
-                 <ul id="demo1">
-                     <li>这里是文字留言这里是文字留言</li>
-                     <li>这里是文字留言这里是文字留言</li>
-                     <li>这里是文字留言这里是文字留言</li>
-                     <li>这里是文字留言这里是文字留言</li>
-                     <li>这里是文字留言这里是文字留言</li>
-                     <li>这里是文字留言这里是文字留言</li>
-                     <li>这里是文字留言这里是文字留言</li>
-                     <li>这里是文字留言这里是文字留言</li>
-                     <li>这里是文字留言这里是文字留言</li>
-                     <li>这里是文字留言这里是文字留言</li>
-                     <li>这里是文字留言这里是文字留言</li>
-                     <li>这里是文字留言这里是文字留言</li>
-                     <li>这里是文字留言这里是文字留言</li>
-                     <li>这里是文字留言这里是文字留言</li>
-                     <li>这里是文字留言这里是文字留言</li>
-                     <li>这里是文字留言这里是文字留言</li>
-                     <li>这里是文字留言这里是文字留言</li>
-                     <li>这里是文字留言这里是文字留言</li>
-                     <li>这里是文字留言这里是文字留言</li>
-                     <li>这里是文字留言这里是文字留言</li>
-                     <li>这里是文字留言这里是文字留言</li>
-                     <li>这里是文字留言这里是文字留言</li>
-                     <li>这里是文字留言这里是文字留言</li>
-                     <li>这里是文字留言这里是文字留言</li>
-                 </ul>
-                 <div id="demo2"></div>
-                </div>
-            </div></div>
-            <div><img src="images/last_2.jpg" width="100%"></div>
-            <div><img src="images/last_3.jpg" width="100%"></div>
-            <div><img src="images/last_4.jpg" width="100%"></div>
-        </div>
-    </div>
 
     <!-- 关卡结束 -->
-    <div class="layer_style layer_level" id="layerLevel" style="display:none">
-        <div class="input"><textarea></textarea></div>
-        <div class="clearfix"></div>
-        <a href="javascript:;" class="btn"></a>
-    </div>
 
-    <div id="layer_mask" style="display:none"></div>
-    <div id="message" class="layer_style message" style="display:none"><a href="javascript:;" action="closeLayer"></a></div>
 </div>
 
     <script>

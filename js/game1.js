@@ -8,7 +8,7 @@ var d = document,
 	speed  = [2,3,4],
 	winHeight = window.innerHeight,
 	winWidth = window.innerWidth,
-	defaultLevelSingleTime = 45,//单关时间
+	defaultLevelSingleTime = 50,//单关时间
 
 	canvas = d.getElementById('canvas'),
 	stage = canvas.getContext('2d'),
@@ -37,7 +37,7 @@ var d = document,
 var emTpx = function(em){
 	return em * (winWidth / 750 * 24);
 }
-
+var games;
 var emenyConfig = [
 	{
 		p:'images/game_1_goods.png',
@@ -46,54 +46,55 @@ var emenyConfig = [
 	},
 	{
 		p:'images/game_2_goods.png',
-		w:emTpx(10.9),
-		h:emTpx(9.2)
+		w:emTpx(10.9)*.5,
+		h:emTpx(9.2)*.5
 	},
 	{
 		p:'images/game_bad.png',
-		w:emTpx(9.58),
-		h:emTpx(9.83)
+		w:emTpx(9.58)*.5,
+		h:emTpx(9.83)*.5
 	}
 ]
 var effectConfig = [
 	{
 		p: 'images/pow.png',
-		w: emTpx(10.25),
-		h: emTpx(7),
-		deviationX: emTpx(2.5),
-		deviationY: emTpx(-1.5)
+		w: emTpx(10.25)*.4,
+		h: emTpx(7)*.4,
+		deviationX: emTpx(2.5)*.4,
+		deviationY: emTpx(.5)*.4
 	},
 	{
 		p: 'images/like.png',
-		w: emTpx(7.7),
-		h: emTpx(7.125),
-		deviationX: emTpx(.5),
-		deviationY: emTpx(-3.625)
+		w: emTpx(7.7)*.6,
+		h: emTpx(7.125)*.6,
+		deviationX: emTpx(.5)*.6,
+		deviationY: emTpx(-3.625)*.6
 	},
 	{
 		p: 'images/yeah.png',
-		w: emTpx(9.58),
-		h: emTpx(9.83),
-		deviationX: emTpx(3.75),
-		deviationY: emTpx(-4.3)
+		w: emTpx(9.58)*.4,
+		h: emTpx(9.83)*.4,
+		deviationX: emTpx(3.75)*.4,
+		deviationY: emTpx(-4.3)*.4
 	},
 	{
 		p: 'images/crash.png',
-		w: emTpx(10.91),
-		h: emTpx(11.16),
-		deviationX: emTpx(0),
-		deviationY: emTpx(-6.54)
+		w: emTpx(10.91)*.5,
+		h: emTpx(11.16)*.5,
+		deviationX: emTpx(0)*.5,
+		deviationY: emTpx(-6.54)*.5
 	}
 ]
 
 //飞机
 var flyLocation = [0, emTpx(11.125), emTpx(22.25)];
-var flyWH = {w:emTpx(13.58), h:emTpx(10.375)};
-
+var flyWH = {w:emTpx(13.58)*.6, h:emTpx(10.375)*.6};
+var minLeft = emTpx(1)*.7
+var maxRight = winWidth - emTpx(10.9)*.7
 
 //飞机
+var bindEventStatus = false;
 var fly = function(level){
-	this.level = level
 	this.init();
 }
 fly.prototype = {
@@ -107,7 +108,7 @@ fly.prototype = {
 		this.locations = 1;
 		this.timer = null;
 		this.dieSpeed = 0;
-		this.y = winHeight - this.height;
+		this.y = winHeight;
 		this.x = (winWidth - this.width) / 2;
 		this.CenterX = this.width / 2;
 		this.CenterY = this.height / 2;
@@ -121,32 +122,41 @@ fly.prototype = {
 		this.isRun = true;
 
 		this.item.onload = function(){
-			_this.bindEvent();
-			return this;
+			_this.animateNew();
+			return _this;
 		}
 	},
 	bindEvent:function(){
 		var _this = this;
-		d.addEventListener('touchstart', _this.touchstart.bind(this))
-		d.addEventListener('touchmove', this.touchmove.bind(this))
+		bindEventStatus = true;
+		effect.addEventListener('touchstart', _this.touchstart.bind(this))
+		d.addEventListener('touchend', this.touchend.bind(this))
 	},
 	unbindEvent:function(){
 		var _this = this;
-		d.removeEventListener('touchstart', _this.touchstart.bind(this))
+		effect.removeEventListener('touchstart', _this.touchstart.bind(this))
 		d.removeEventListener('touchmove', this.touchmove.bind(this))
+		d.removeEventListener('touchend', this.touchend.bind(this))
 	},
 	touchstart: function(e){
 		var _this = this;
+		d.addEventListener('touchmove', this.touchmove.bind(this))
 		_this.startX = parseInt(e.touches[0].clientX, 10);
 		_this.startY = parseInt(e.touches[0].clientY, 10);
+		games.insertZidan();
+	},
+	touchend: function(e){
+		window.clearInterval(games.insertZidanTimer);
+		games.insertZidanTimer = null;
+		d.removeEventListener('touchmove', this.touchmove.bind(this))
+		d.removeEventListener('touchend', this.touchend.bind(this))
 	},
 	touchmove: function(ex){
-		var _this = this;
-
-		_this.moveX = parseInt(ex.changedTouches[0].clientX, 10);
-		_this.moveY = parseInt(ex.changedTouches[0].clientY, 10);
-		_this.x     = _this.moveX - _this.CenterX;
-		_this.y     = _this.moveY - _this.CenterY;
+		if(!games.flys.isRun) return;
+		games.flys.moveX = parseInt(ex.changedTouches[0].clientX, 10);
+		games.flys.moveY = parseInt(ex.changedTouches[0].clientY, 10);
+		games.flys.x     = games.flys.moveX - games.flys.CenterX;
+		games.flys.y     = games.flys.moveY - games.flys.CenterY;
 	},
 	animateNew: function(){
 		var _this = this;
@@ -159,14 +169,10 @@ fly.prototype = {
 			this.isRun = true;
 			this.y = winHeight - this.height;
 			games.blood = 100;
-			games.life--;
-			if(games.life == 0){
-				games.gameOver();
-			}
-			games.bloodHandler();
+			games.pointBar.css('right', '0%');
 			cancelAnimationFrame(this.newtimer);
-			cancelAnimationFrame(this.dietimer);
-			this.bindEvent();
+			//this.unbindEvent();
+			if(!bindEventStatus) this.bindEvent();
 		}
 	},
 	animateDie: function(){
@@ -179,18 +185,22 @@ fly.prototype = {
 		}else{
 			this.x = (winWidth - this.width) / 2;
 			cancelAnimationFrame(_this.dietimer);
-			setTimeout(function(){
-				_this.animateNew();
-			},300)
+			games.flys = new fly();
 		}
 	},
 	die: function(){
 		var _this = this;
-		this.unbindEvent();
+		//this.unbindEvent();
+		window.clearInterval(games.insertZidanTimer);
+		this.isRun = false;
+		games.life--;
+		if(games.life == 0){
+			games.gameOver();
+		}
 		setTimeout(function(){
 			games.clearItems();
 			_this.animateDie();
-		},200)
+		},500)
 	}
 }
 
@@ -201,6 +211,7 @@ var getEffects = function(obj){
 }
 getEffects.prototype = {
 	init : function(){
+
 		var _this = this;
 		var thisObj = effectConfig[this.goods.type];
 		this.item = new Image();
@@ -248,8 +259,6 @@ getEffects.prototype = {
 		}else{
 			setTimeout(function(){
 				if(_this.goods.type == 0){
-					games.life--;
-					games.flys.die();
 					_this.delItem(_this.id);
 				}else{
 					_this.goods.delSelf();
@@ -269,7 +278,7 @@ var getItems = function(level){
 getItems.prototype = {
 	init : function(){
 		this.items = new Image();
-		this.speed = speed[1];
+		this.speed = speed[parseInt(Math.random()*3)];
 		this.locations = parseInt(Math.random() * 3);
 		this.timer = null;
 		this.delTimer = null;
@@ -281,6 +290,7 @@ getItems.prototype = {
 		this.isRun = true;
 		this.id = Date.parse(new Date()) + '_' + parseInt(Math.random() * 999999);
 		this.isBad = parseInt(Math.random() * 10);
+
 		if(this.isBad < 2){
 			this.type = 1;
 			this.w = emenyConfig[0].w;
@@ -297,8 +307,10 @@ getItems.prototype = {
 			this.h = emenyConfig[2].h;
 			this.items.src = emenyConfig[2].p;//坏兔子
 		}
-		this.x = itemLcation[this.locations];
-		this.y = -this.h;
+		this.x = Math.random()*(maxRight - minLeft) + minLeft;
+		this.y = -(Math.random()*(200 - this.h) + this.h)
+		//this.x = itemLcation[this.locations];
+		//this.y = -this.h;
 		this.items.onload = function(){
 			games.screenItems.push(_this);
 			_this.startAnimate();
@@ -342,22 +354,34 @@ getItems.prototype = {
 	checkMeet : function(){
 		var _this = this;
 		if(
-			((this.x + this.w > games.flys.x + emTpx(2) && this.y > games.flys.y + emTpx(2)) ||
-			(this.x < games.flys.x + games.flys.w - emTpx(2) && this.y > games.flys.y + emTpx(2))) &&
-			((this.x + this.w > games.flys.x + emTpx(2) && this.y + this.h > games.flys.y + emTpx(2)) ||
-			(this.x < games.flys.x + games.flys.w - emTpx(2) && this.y+this.h > games.flys.y + emTpx(2)))
+			((this.x + this.w > games.flys.x + emTpx(1) && this.y > games.flys.y + emTpx(1)) ||
+			(this.x < games.flys.x + games.flys.w - emTpx(1) && this.y > games.flys.y + emTpx(1))) &&
+			((this.x + this.w > games.flys.x + emTpx(1) && this.y + this.h > games.flys.y + emTpx(1)) ||
+			(this.x < games.flys.x + games.flys.w - emTpx(1) && this.y+this.h > games.flys.y + emTpx(1))) && this.isRun
 		){
 			if(this.type == 3){
 				this.isRun = false;
 				games.blood -= 20;
-				games.pointHandler();
 				if(games.blood <= 0){
-					games.flys.isRun = false;
+
+					games.flys.die()
+
 					new getEffects(games.flys)
-
 				}
-
+				games.pointHandler();
 				_this.delItem(this.id)
+			}else if(this.type == 1){
+				games.blood += 5;
+				if(games.blood > 100){
+					games.blood = 100;
+				}
+				this.isRun = false;
+				new getEffects(this)
+				games.pointHandler();
+			}else if(this.type == 2){
+				this.isRun = false;
+				new getEffects(this)
+				games.addFlag();
 			}
 		}
 	}
@@ -367,7 +391,7 @@ getItems.prototype = {
 
 //子弹
 var getZidan = function(level){
-	this.level = Math.floor(Math.random()*(4 - 1) + 1);;
+	this.level = Math.floor(Math.random()*(4 - 1) + 1);
 	this.init();
 }
 getZidan.prototype = {
@@ -426,15 +450,15 @@ getZidan.prototype = {
 			if(
 				this.y < goods.y + (goods.h / 2) &&
 				this.x > goods.x &&
-				this.x < (goods.x + goods.w) && goods.isRun
+				this.x < (goods.x + goods.w) && goods.isRun &&
+				goods.y > goods.h/2 && goods.isRun
 			){
 				if(!games.pause){
 					this.isRun = false;
 					this.delItem(this.id);
 					goods.shot++;
-					if(goods.shot > 5){
+					if(goods.shot > 7){
 						if(goods.type == 3){
-
 							games.point += 10;
 						}else if(goods.type == 1){
 							games.blood += 5;
@@ -458,7 +482,8 @@ getZidan.prototype = {
 
 //游戏主体
 window.game = function(){
-	this.level = 1;
+	this.init()
+	return this;
 }
 game.prototype = {
 	init : function(){
@@ -469,10 +494,11 @@ game.prototype = {
 		this.stageTimer = null;
 		this.insertTimer = null;
 		this.insertZidanTimer = null;
+		this.createZidan = true;
 		this.isRun = true;
 		this.pause = false;
 		this.gameCountTime = 3;
-		this.flys = new fly();
+
 		this.time = defaultLevelSingleTime;
 		this.screenItems = [];
 		this.screenZidan = [];
@@ -480,14 +506,13 @@ game.prototype = {
 		this.blood = 100;
 		this.point = 0;
 		this.life = 3;
+		this.createEmenyTime = 1000;
 		this.gameCountDown();
+		this.pointHandler();
 	},
 	pointHandler: function(){
 		this.pointBar.css('right', (100 - this.blood) + '%');
 		this.pointFont.text(this.point);
-		if(this.blood == 0){
-			this.flys.die()
-		}
 	},
 	addFlag: function(){
 		this.pointFlag.append('<img src="images/flag.png">')
@@ -502,7 +527,7 @@ game.prototype = {
 			window.clearTimeout(_this.timer);
 			_this.timeCountDown();
 			_this.start();
-			this.drapStage();
+			_this.drapStage();
 			return false;
 		}
 		_this.timer = setTimeout(function(){
@@ -531,6 +556,7 @@ game.prototype = {
 		for(var i=0;i<this.screenZidan.length;i++){
 			this.screenZidan[i] = null;
 		}
+		this.flys = null;
 		this.screenItems = [];
 		this.screenZidan = [];
 	},
@@ -539,23 +565,29 @@ game.prototype = {
 		_this.isRun = false;
 		_this.clearItems();
 		$('.btn_area').show();
-
-
 		clearTimeout(_this.insertTimer)
 		clearTimeout(_this.insertZidanTimer)
-		$('#layerLevel').css('background-image', 'url(images/'+ (this.life == 0 && this.time <= 0 ? 'layer_bg_success' : 'layer_bg_fail') +'.png)')
+		$('#layerLevel').css('background-image', 'url(images/layer_bg_success.png)')
 		showLayer('layerLevel')
+	},
+	createItemTime: function(){
+		var _this = this;
+		_this.createEmenyTime -= 50
+		if(_this.createEmenyTime <= 300){
+			_this.createEmenyTime = 300;
+		}
+		setTimeout(_this.createItemTime.bind(this), 3000)
 	},
 	insertItems : function(){
 		var _this = this;
-		_this.insertTimer = setInterval(function(){
-			if(_this.isRun){
-				new getItems();
-			}
-		},800);
+		if(_this.isRun){
+			new getItems();
+		}
+		_this.insertTimer = setTimeout(_this.insertItems.bind(this), _this.createEmenyTime);
 	},
 	insertZidan : function(){
 		var _this = this;
+		if(!_this.createZidan) return;
 		_this.insertZidanTimer = setInterval(function(){
 			if(_this.isRun && _this.flys.isRun){
 				new getZidan();
@@ -569,7 +601,7 @@ game.prototype = {
 		stageZidan.clearRect(0,0,winWidth,winHeight)
 		stageEffect.clearRect(0,0,winWidth,winHeight)
 
-		stage.drawImage(_this.flys.item, _this.flys.x, _this.flys.y, _this.flys.width, _this.flys.height);
+		_this.flys && stage.drawImage(_this.flys.item, _this.flys.x, _this.flys.y, _this.flys.width, _this.flys.height);
 		for(var i=0;i<this.screenItems.length;i++){
 			var goods = this.screenItems[i]
 			stageEnemy.drawImage(goods.items, goods.x, goods.y, goods.w, goods.h);
@@ -602,28 +634,59 @@ game.prototype = {
 		this.blood = 100;
 		this.point = 0;
 		this.life = 3;
+		this.createEmenyTime = 1100;
 		this.clearItems();
 		this.timeCountDown();
+		this.createItemTime();
 		this.start();
 		this.drapStage();
 	},
 	start : function(){
-
+		this.flys = new fly();
+		this.createItemTime();
 		this.insertItems();
-		this.insertZidan();
-
 	}
 }
 
+wx.config({
+    debug: false,
+    appId: 'wx61fd9f994978eebd',
+    timestamp: '',
+    nonceStr: '',
+    signature: '',
+    jsApiList: [
+        'checkJsApi',
+		'onMenuShareTimeline',
+		'onMenuShareAppMessage',
+		'onMenuShareQQ',
+		'onMenuShareWeibo',
+    ]
+});
+
+function audioAutoPlay(audio){
+    var play = function() {
+        document.removeEventListener("WeixinJSBridgeReady", play);
+		wx.ready(function(){
+			audio.play();
+		})
+    };
+    audio.play();
+    document.addEventListener("WeixinJSBridgeReady", play, false);
+}
+$(document).ready(function(){
+	var audio = document.getElementById('audio');
+	wx.ready(function(){
+		audio.play();
+	})
+	audio.play();
+})
+
 function gameStart(){
-	var audios = document.getElementById('audio');
-	audios.play();
-	window.games = null;
+	audioAutoPlay(audio)
 	countDown.style.display = 'block';
 	hideLayer('layerLevel');
 	$('.btn_area').hide();
-	window.games = new game();
-	games.init();
+	games = new game();
 }
 //gameStart()
 function gameNext(){

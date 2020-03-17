@@ -156,10 +156,13 @@ div.show{display:block;z-index:2; visibility:visible;top:0;left:0;}
 #gamePage .count_down.count_2{background-image:url(../images/countdown_2.png);}
 #gamePage .count_down.count_3{background-image:url(../images/countdown_3.png);}
 
-#gamePage canvas{width:100%;height:100%; position: absolute;left:0;top:0;}
+#gamePage canvas#canvas{width:100%;height:100%; position: absolute;left:0;top:0;z-index:1;}
+#gamePage canvas#zidan {width:100%;height:100%; position: absolute;left:0;top:0;z-index:2;}
+#gamePage canvas#enemy {width:100%;height:100%; position: absolute;left:0;top:0;z-index:3;}
+#gamePage canvas#effect{width:100%;height:100%; position: absolute;left:0;top:0;z-index:4;}
 
 
-.blood{display:block;height:4.458em; position: absolute;left:0;top:0;z-index:5;padding-left:10em;background:url(../images/logo.png) no-repeat left center/auto 100%}
+.blood{display:block;height:4.458em; position: absolute;left:0;top:0;z-index:10;padding-left:10em;background:url(../images/logo.png) no-repeat left center/auto 100%}
 .blood .bars{display:block;width:10em;height:.9em;border:1px solid #00244F;background:#DAE3E3;border-radius:.45em;margin-top:1.5em; position: relative;}
 .blood .bars:after{display:block; content:' ';background:#624C46;border:1px solid #C97E4D; position: absolute;top:2px;left:2px;bottom:2px;right:2px;z-index:1;border-radius:.45em;border:1px solid #C97E4D;}
 .blood .bars .box{display:block;height:100%;}
@@ -173,14 +176,14 @@ div.show{display:block;z-index:2; visibility:visible;top:0;left:0;}
 .blood .bars .line:nth-child(3) span{background-image:url(../images/star_2.png)}
 .blood .bars .line:nth-child(4) span{background-image:url(../images/star_3.png);left:auto;right:0; transform: translateY(0);}
 
-.mask_point{display:block;width:6.25em; position: absolute;right:0;top:.75em; white-space: nowrap;}
+.mask_point{display:block;width:6.25em; position: absolute;right:0;top:.75em; white-space: nowrap;z-index:10;}
 .mask_point .point{display:block; text-align:right;line-height:2.5em;font-size:1.5em;font-weight:bold;color:#FFFFFF;padding-right:1em;}
 .mask_point .flag{display:block;height:auto;overflow:hidden;padding-right:1.5em;}
 .mask_point .flag img{width:1em;height:1em;float:right;margin-right:-.16em;margin-bottom:.16em;}
 
-.btn_area{display:none;width:29.2em;left:50%;margin-left:-14.6em; position: absolute;bottom:.2em;}
-.btn_area a{float:left; white-space: nowrap;display:block;height:3.5em;}
-.btn_area a img{height:100%;}
+.btn_area{display:none;width:21.6em;left:50%;margin-left:-10.8em; position: absolute;top:56%;z-index:5;}
+.btn_area a{float:left;height:17.2em;width:5.4em;margin:0 .9em;display:block;}
+.btn_area a img{width:100%;}
 
 
 
@@ -195,7 +198,7 @@ div.show{display:block;z-index:2; visibility:visible;top:0;left:0;}
 
 
 
-.layer_style{width:25.5em;height:19em; background:no-repeat center center/100% 100%;position:absolute;left:50%;margin-left:-12.75em;top:50%;margin-top:-9.5em;z-index:10000;}
+.layer_style{width:27.4em;height:11.2em; background:no-repeat center center/100% 100%;position:absolute;left:50%;margin-left:-13.7em;top:28%;z-index:8;}
 .layer_style .input{width:15em;height:3em;margin:0 auto;padding-top:13.625em;display:block;}
 .layer_style .input textarea{width:100%;font-size:1em;height:3em;line-height:1.5;border:0;background:none;}
 .layer_style .btn{width:2.5em;height:1.5em;display:block;background:url(../images/btn_submit.png) no-repeat center center/100% 100%;float:right;margin-right:5.25em;}
@@ -212,5 +215,5 @@ div.show{display:block;z-index:2; visibility:visible;top:0;left:0;}
 
 
 
-.message{ display:block;width:100%;height:100%; position:absolute;left:0;top:0; background:url(../images/message.png) no-repeat top center/100% auto rgba(0,0,0,.7);z-index:1000000;margin:0;}
-.message a{ display:block; width:100%;height:100%; position:absolute;left:0;top:0;}
+.message{ display:block;width:100%;height:100%; position:absolute;left:0;top:0;background:url(../images/bg.jpg) no-repeat center center/100% 100%; z-index:9;margin:0;}
+.message a{ display:block; width:100%;height:100%; position:absolute;left:0;top:0;background:url(../images/message.png) no-repeat center center/100% auto;}
