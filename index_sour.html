@@ -64,11 +64,16 @@
         <canvas id="enemy"></canvas>
         <canvas id="zidan"></canvas>
         <canvas id="effect"></canvas>
-        <div id="count_down" class="count_down count_3" style="display:block"></div>
+        <div id="count_down" class="count_down count_3" style="display:block">
+            <div class="box">
+                <p align="center"><b>游戏说明</b></p>
+                <p>长按飞机发射子弹消灭飞来物体。<br>打中“绿色病毒”即增长消灭病毒数量；<br>打中“口罩”赢得国旗；<br>打中“八草一茶”增加星星油量。<br>游戏结束，有机会免费获得价值99元蛹虫草茶一盒。</p>
+            </div>
+        </div>
 
         <div class="btn_area">
             <a href="resule.html" class="btn_next"><img src="images/btn_1.png"></a>
-            <a href="javascript:;" class="btn_reply" onClick="gameStart()"><img src="images/btn_2.png"></a>
+            <a href="javascript:;" class="center btn_reply" onClick="gameStart()"><img src="images/btn_2.png"></a>
             <a href="javascript:;" class="btn_share" action="showLayer.message"><img src="images/btn_3.png"></a>
         </div>
         <div class="layer_style layer_level" id="layerLevel" style="display:none"></div>

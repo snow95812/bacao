@@ -457,7 +457,7 @@ getZidan.prototype = {
 					this.isRun = false;
 					this.delItem(this.id);
 					goods.shot++;
-					if(goods.shot > 7){
+					if(goods.shot > 5){
 						if(goods.type == 3){
 							games.point += 10;
 						}else if(goods.type == 1){

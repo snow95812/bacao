@@ -23,12 +23,91 @@
         <div class="page_cont">
             <div><img src="images/last_2.jpg" width="100%"></div>
             <div><img src="images/last_3.jpg" width="100%"></div>
-            <div><img src="images/last_4.jpg" width="100%"></div>
+            <div class="bottom"><div class="font">
+                <div id="demo">
+                 <ul id="demo1">
+
+<li>武汉加油️</li>
+<li>中国加油！</li>
+<li>武汉加油，中国加油！</li>
+<li>中国是不可战胜的</li>
+<li>感谢前线医护人员，向你们致敬！</li>
+<li>中国加油！</li>
+<li>上海加油，中国加油！</li>
+<li>春暖花开，疫情过去，病毒统统消灭光！</li>
+<li>游戏不错，来跟我一起消灭病毒，中国加油！</li>
+<li>武汉加油！</li>
+<li>中国共产党万岁！</li>
+<li>还是祖国好，早早消灭病毒</li>
+<li>我打了好多口罩，超爽。祖国我们爱你</li>
+<li>祖国我们爱你！</li>
+<li>伟大的中华人民共和国万岁！</li>
+<li>祖国万岁！</li>
+<li>中国好样的，祖国万岁！</li>
+<li>中国加油</li>
+<li>疫情就快结束，但我们永远铭记在心！</li>
+<li>伟大国家万岁，永享太平</li>
+<li>祖国平安，繁荣富强</li>
+<li>武汉加油️️</li>
+<li>武汉加油，等待你们的好消息</li>
+<li>病毒清0不是梦，我们的祖国好样的</li>
+<li>武汉加油️</li>
+<li>中国加油！</li>
+<li>武汉加油，中国加油！</li>
+<li>中国是不可战胜的</li>
+<li>感谢前线医护人员，向你们致敬！</li>
+<li>中国加油！</li>
+<li>上海加油，中国加油！</li>
+<li>春暖花开，疫情过去，病毒统统消灭光！</li>
+<li>游戏不错，来跟我一起消灭病毒，中国加油！</li>
+<li>武汉加油！</li>
+<li>中国共产党万岁！</li>
+<li>还是祖国好，早早消灭病毒</li>
+<li>我打了好多口罩，超爽。祖国我们爱你</li>
+<li>祖国我们爱你！</li>
+<li>伟大的中华人民共和国万岁！</li>
+<li>祖国万岁！</li>
+<li>中国好样的，祖国万岁！</li>
+<li>中国加油</li>
+<li>疫情就快结束，但我们永远铭记在心！</li>
+<li>伟大国家万岁，永享太平</li>
+<li>祖国平安，繁荣富强</li>
+<li>武汉加油️️</li>
+<li>武汉加油，等待你们的好消息</li>
+<li>病毒清0不是梦，我们的祖国好样的</li>
+                 </ul>
+                 <div id="demo2"></div>
+                </div>
+            </div></div>
         </div>
     </div>
 
 </div>
+<script>
+function fontScroll(){
+	var speed = 40
+	// 向上滚动
+	var demo = document.getElementById("demo");
+	var demo2 = document.getElementById("demo2");
+	var demo1 = document.getElementById("demo1");
+	demo2.innerHTML = demo1.innerHTML
+	function Marquee() {
+	    if (demo.scrollTop >= demo1.offsetHeight) {
+	        demo.scrollTop = 0;
+	    } else {
+	        demo.scrollTop = demo.scrollTop + 1;
+	    }
+	}
+	var MyMar = setInterval(Marquee, speed)
+	demo.onmouseover = function() {
+	    clearInterval(MyMar)
+	}
+	demo.onmouseout = function() {
+	    MyMar = setInterval(Marquee, speed)
+	}
+}
+fontScroll();
+</script>
 
-    
 </body>
 </html>

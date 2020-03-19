@@ -84,10 +84,10 @@ backface-visibility: hidden;
 }
 div.show{display:block;z-index:2; visibility:visible;top:0;left:0;}
 .page .page_cont{width:100%;height:100%;overflow:auto;overflow-x:hidden;}
-.page .page_cont .top{width:100%;height:63em;float:left;clear:both;background:url(../images/last_1.jpg) no-repeat center center/100% 100%;}
-.page .page_cont .top .font{width:23em;height:28em;overflow:hidden;margin:0 auto;padding-top:33em;font-size:1em;line-height:1.5;}
-.page .page_cont .top .font li{margin-bottom:.5em;}
-.page .page_cont .top .font #demo{width:100%;height:28em;overflow:hidden;}
+.page .page_cont .bottom{width:100%;height:37.2em;padding-top:13.4em;float:left;clear:both;background:url(../images/last_4.jpg) no-repeat center center/100% 100%;}
+.page .page_cont .bottom .font{width:23em;height:5.6em;overflow:hidden;margin:0 auto;font-size:1em;line-height:1.5;}
+.page .page_cont .bottom .font li{margin-bottom:.5em;}
+.page .page_cont .bottom .font #demo{width:100%;height:28em;overflow:hidden;}
 .page .page_cont img{width:100%;float:left;clear:both;}
 .music_play{width:3em;;height:3em; position:absolute;left:1.5em;top:2.75em; display:block; background:url(../images/music_play.png) no-repeat center center;background-size:cover;z-index:999;}
 .music_pause{width:3em;height:3em; position:absolute;left:1.5em;top:2.75em; display:block; background:url(../images/music_pause.png) no-repeat center center;background-size:cover;z-index:999;}
@@ -151,11 +151,12 @@ div.show{display:block;z-index:2; visibility:visible;top:0;left:0;}
 
 /* 游戏页 */
 #gamePage{ background-image:url(../images/bg.jpg);}
-#gamePage .count_down{ display:none; position:absolute;left:0;top:0;width:100%;height:100%;z-index:10;background:no-repeat center center/9em 9em rgba(0,0,0,.9);}
+#gamePage .count_down{ display:none; position:absolute;left:0;top:0;width:100%;height:100%;z-index:10;background:no-repeat center 20%/9em 9em rgba(0,0,0,.9);}
 #gamePage .count_down.count_1{background-image:url(../images/countdown_1.png);}
 #gamePage .count_down.count_2{background-image:url(../images/countdown_2.png);}
 #gamePage .count_down.count_3{background-image:url(../images/countdown_3.png);}
-
+#gamePage .count_down .box{margin:0 3em;padding-top:70%;line-height:1.8;font-size:1.25em;color:#FFFFFF;text-shadow:0 0 1px solid #000;}
+#gamePage .count_down .box p:nth-child(1){font-size:1.25em;font-weight:bold;margin-bottom:1em;}
 #gamePage canvas#canvas{width:100%;height:100%; position: absolute;left:0;top:0;z-index:1;}
 #gamePage canvas#zidan {width:100%;height:100%; position: absolute;left:0;top:0;z-index:2;}
 #gamePage canvas#enemy {width:100%;height:100%; position: absolute;left:0;top:0;z-index:3;}
@@ -181,10 +182,10 @@ div.show{display:block;z-index:2; visibility:visible;top:0;left:0;}
 .mask_point .flag{display:block;height:auto;overflow:hidden;padding-right:1.5em;}
 .mask_point .flag img{width:1em;height:1em;float:right;margin-right:-.16em;margin-bottom:.16em;}
 
-.btn_area{display:none;width:21.6em;left:50%;margin-left:-10.8em; position: absolute;top:56%;z-index:5;}
-.btn_area a{float:left;height:17.2em;width:5.4em;margin:0 .9em;display:block;}
+.btn_area{display:none;width:21.625em;left:50%;margin-left:-10.3125em; position: absolute;top:50%;z-index:5;}
+.btn_area a{float:left;width:6.25em;display:block;}
 .btn_area a img{width:100%;}
-
+.btn_area a.center{width:8.375em;}
 
 
 
@@ -215,5 +216,5 @@ div.show{display:block;z-index:2; visibility:visible;top:0;left:0;}
 
 
 
-.message{ display:block;width:100%;height:100%; position:absolute;left:0;top:0;background:url(../images/bg.jpg) no-repeat center center/100% 100%; z-index:9;margin:0;}
+.message{ display:block;width:100%;height:100%; position:absolute;left:0;top:0;background:url(../images/bg.jpg) no-repeat center top/100% 100%; z-index:9;margin:0;}
 .message a{ display:block; width:100%;height:100%; position:absolute;left:0;top:0;background:url(../images/message.png) no-repeat center center/100% auto;}
